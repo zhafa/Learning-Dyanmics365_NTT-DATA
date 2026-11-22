@@ -11,6 +11,8 @@ permissionset 50200 EquipmentAdmin_ZH
         page EquipmentList_ZH = X,
         page EquipmentCard_ZH = X,
         page EquipmentSetup_ZH = X,
+        codeunit LoanEventSubscribers_ZH = X,
+        tabledata Employee = R,
         tabledata "No. Series" = R,
         tabledata "No. Series Line" = RM,
         tabledata LoanHeader_ZH = RIMD,
