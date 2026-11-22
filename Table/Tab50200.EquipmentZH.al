@@ -33,7 +33,17 @@ table 50200 Equipment_ZH
             Caption = 'Status';
             InitValue = Available;
         }
-        field(5; Blocked; Boolean) { Caption = 'Blocked'; }
+        field(5; Blocked; Boolean) 
+        { 
+            Caption = 'Blocked'; 
+        }
+        field(6; "Current Holder"; Code[20])
+        {
+            Caption = 'Current Holder';
+            TableRelation = Employee."No.";
+            Editable = false;
+        }
+          
         field(10; "No. Series"; Code[20])
         {
             Caption = 'No. Series';

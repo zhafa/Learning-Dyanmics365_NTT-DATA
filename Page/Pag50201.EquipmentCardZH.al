@@ -15,6 +15,7 @@ page 50201 EquipmentCard_ZH
 
                 field("Code"; Rec."Code")
                 {
+                    Editable = false;
                     ToolTip = 'Specifies the unique code of the equipment. It is filled in automatically from the number series.';
                 }
                 field(Description; Rec.Description)

@@ -118,7 +118,7 @@ table 50202 LoanHeader_ZH
             Error(NoLinesErr);
 
         CheckEquipmentNotOnLoan();
-        UpdateEquipmentStatus(Enum::EquipmentStatus_ZH::"Loan");
+        UpdateEquipmentStatus(Enum::EquipmentStatus_ZH::"Loan", Employee);
 
         Status := Status::Released;
         Modify(true);
@@ -131,7 +131,7 @@ table 50202 LoanHeader_ZH
         if Status <> Status::Released then
             Error(NotReleasedErr, "No.", Status);
         
-        UpdateEquipmentStatus(Enum::EquipmentStatus_ZH::Available);
+        UpdateEquipmentStatus(Enum::EquipmentStatus_ZH::Available,'');
 
         Status := Status::Open;
         Modify(true);
@@ -144,7 +144,7 @@ table 50202 LoanHeader_ZH
     begin
         if Status <> Status::Released then
             Error(NotReleasedErr, "No.", Status);
-        UpdateEquipmentStatus(Enum::EquipmentStatus_ZH::Available);
+        UpdateEquipmentStatus(Enum::EquipmentStatus_ZH::Available,'');
 
         Status := Status::Returned;
         "Actual Return Date" := WorkDate();
@@ -168,7 +168,7 @@ table 50202 LoanHeader_ZH
     end;
 
     // Update status Equipment
-    local procedure UpdateEquipmentStatus(NewStatus: Enum "EquipmentStatus_ZH")
+    local procedure UpdateEquipmentStatus(NewStatus: Enum EquipmentStatus_ZH; NewHolder: Code[20])
     var
         LoanLine : Record LoanLine_ZH;
         Equipment : Record Equipment_ZH;
@@ -178,6 +178,7 @@ table 50202 LoanHeader_ZH
             repeat
               if  Equipment.Get(LoanLine."EquipmentCode") then begin
                     Equipment.Status := NewStatus;
+                    Equipment."Current Holder" := NewHolder;
                     Equipment.Modify(true);
                 end;
             until LoanLine.Next() = 0;
