@@ -96,6 +96,7 @@ table 50202 LoanHeader_ZH
                 Error(DateErr, FieldCaption("Expected Return Date"), FieldCaption(LoanDate));
     end;
 
+    // fitur untuk merubah status dari Open menjadi Released
     procedure Release()
     var
         LoanLine: Record LoanLine_ZH;
@@ -116,18 +117,69 @@ table 50202 LoanHeader_ZH
         if LoanLine.IsEmpty() then
             Error(NoLinesErr);
 
+        CheckEquipmentNotOnLoan();
+        UpdateEquipmentStatus(Enum::EquipmentStatus_ZH::"Loan");
+
         Status := Status::Released;
         Modify(true);
     end;
-
+    // Fitur untuk membatalkan status Released menjadi Open
     procedure Reopen()
     var
         NotReleasedErr: Label 'Loan %1 cannot be reopened because its status is %2. Only released loans can be reopened.';
     begin
         if Status <> Status::Released then
             Error(NotReleasedErr, "No.", Status);
+        
+        UpdateEquipmentStatus(Enum::EquipmentStatus_ZH::Available);
 
         Status := Status::Open;
         Modify(true);
+    end;
+
+    // Membalikkan status
+    procedure return()
+    var
+        NotReleasedErr: Label 'Loan %1 cannot be returned because its status is %2. Only released loans can be returned.';
+    begin
+        if Status <> Status::Released then
+            Error(NotReleasedErr, "No.", Status);
+        UpdateEquipmentStatus(Enum::EquipmentStatus_ZH::Available);
+
+        Status := Status::Returned;
+        "Actual Return Date" := WorkDate();
+        Modify(true);
+    end;
+
+    // Seleksi Equipment yang sedang dipinjam
+    local procedure CheckEquipmentNotOnLoan()
+    var
+        LoanLine: Record LoanLine_ZH;
+        Equipment: Record Equipment_ZH;
+        OnLoanErr: Label 'Equipment %1 is already on loan and cannot be released in this loan. Remove it from the lines or wait until it is returned.';
+    begin
+        LoanLine.SetRange("Document no.", "No.");
+        if LoanLine.FindSet() then
+            repeat
+                Equipment.Get(LoanLine."EquipmentCode");
+                if Equipment.Status = Equipment.Status::"Loan" then
+                    Error(OnLoanErr, Equipment."Code");
+            until LoanLine.Next() = 0;
+    end;
+
+    // Update status Equipment
+    local procedure UpdateEquipmentStatus(NewStatus: Enum "EquipmentStatus_ZH")
+    var
+        LoanLine : Record LoanLine_ZH;
+        Equipment : Record Equipment_ZH;
+    begin
+        LoanLine.SetRange("Document no.", "No.");
+        if LoanLine.FindSet() then
+            repeat
+              if  Equipment.Get(LoanLine."EquipmentCode") then begin
+                    Equipment.Status := NewStatus;
+                    Equipment.Modify(true);
+                end;
+            until LoanLine.Next() = 0;
     end;
 }

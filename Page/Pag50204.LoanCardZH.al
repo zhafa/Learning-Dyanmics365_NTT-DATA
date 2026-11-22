@@ -30,6 +30,7 @@ page 50204 LoanCard_ZH
                 }
                 field("Expected Return Date"; Rec."Expected Return Date")
                 {
+                    Editable = false;
                     ToolTip = 'Specifies the date the equipment is expected to be returned.';
                 }
                 field(Status; Rec.Status)
@@ -73,7 +74,7 @@ page 50204 LoanCard_ZH
                 ApplicationArea = All;
                 Caption = 'Reopen';
                 Image = ReOpen;
-                Enabled = not IsOpen;
+                Enabled = not IsReleased;
                 ToolTip = 'Reopen the loan so it can be edited again.';
 
                 trigger OnAction()
@@ -82,19 +83,36 @@ page 50204 LoanCard_ZH
                     CurrPage.Update(false);
                 end;
             }
+            action(Return)
+            {
+                ApplicationArea = all;
+                Caption = 'Return';
+                Image = Return;
+                Enabled = IsReleased;
+                Tooltip = 'Record that the equipment has been returned and make it available again.';
+
+                Trigger OnAction()
+                begin
+                    Rec.return();
+                    CurrPage.Update(false);
+                end;
+            }
         }
         area(Promoted)
         {
             actionref(Release_Promoted; Release) { }
             actionref(Reopen_Promoted; Reopen) { }
+            actionref(Return_Promoted; Return) { }
         }
     }
 
     var
         IsOpen: Boolean;
+        IsReleased: Boolean;
 
     trigger OnAfterGetCurrRecord()
     begin
         IsOpen := Rec.Status = Rec.Status::Open;
+        IsReleased := Rec.Status = Rec.Status::Released;
     end;
 }
