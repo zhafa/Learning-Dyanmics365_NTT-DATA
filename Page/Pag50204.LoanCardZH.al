@@ -30,13 +30,17 @@ page 50204 LoanCard_ZH
                 }
                 field("Expected Return Date"; Rec."Expected Return Date")
                 {
-                    Editable = false;
                     ToolTip = 'Specifies the date the equipment is expected to be returned.';
                 }
                 field(Status; Rec.Status)
                 {
                     Editable = false;
                     ToolTip = 'Specifies whether the loan is open, released or returned.';
+                }
+                field("Actual Return Date"; Rec."Actual Return Date")
+                {   
+                    Editable = false;
+                    ToolTip = 'Specifies the date the equipment was actually returned.';
                 }
             }
             part(Lines; "LoanSubforms_ZH")
