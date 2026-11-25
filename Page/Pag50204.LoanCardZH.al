@@ -42,6 +42,19 @@ page 50204 LoanCard_ZH
                     Editable = false;
                     ToolTip = 'Specifies the date the equipment was actually returned.';
                 }
+
+                // Menambahkan Shorcut untuk dimension 1
+                field("Shortcut Dimension 1 Code"; Rec."Shortcut Dimension 1 Code")
+                {
+                    ApplicationArea = Dimensions;
+                    Tooltip = 'Specifies the value of the first global dimension for the loan.';
+                }
+                // Menambahkan Shorcut untuk dimension 2                
+                field("Shortcut Dimension 2 Code"; Rec."Shortcut Dimension 2 Code")
+                {
+                    ApplicationArea = Dimensions;
+                    Tooltip = 'Specifies the value of the second global dimension for the loan';
+                }
             }
             part(Lines; "LoanSubforms_ZH")
             {
@@ -78,7 +91,7 @@ page 50204 LoanCard_ZH
                 ApplicationArea = All;
                 Caption = 'Reopen';
                 Image = ReOpen;
-                Enabled = not IsReleased;
+                Enabled = IsReleased;
                 ToolTip = 'Reopen the loan so it can be edited again.';
 
                 trigger OnAction()
@@ -101,12 +114,31 @@ page 50204 LoanCard_ZH
                     CurrPage.Update(false);
                 end;
             }
+            
+            // Pembuatan button action untuk dimensions
+            action(Dimensions)
+            {
+                AccessByPermission = tabledata Dimension = R;
+                ApplicationArea = Dimensions;
+                Caption = 'Dimensions';
+                Image = Dimensions;
+                Enabled = Rec."No." <> '';
+                // Cara memasang shorcut kalau perlu aja
+                // ShortcutKey = 'Alt+D';
+                ToolTip = 'View or edit the dimension of the loan.';
+                trigger OnAction()
+                begin
+                    Rec.ShowDocDim();
+                    CurrPage.SaveRecord();
+                end;
+            }
         }
         area(Promoted)
         {
             actionref(Release_Promoted; Release) { }
             actionref(Reopen_Promoted; Reopen) { }
             actionref(Return_Promoted; Return) { }
+            actionref(Dimensions_Promoted; Dimensions) { }
         }
     }
 
