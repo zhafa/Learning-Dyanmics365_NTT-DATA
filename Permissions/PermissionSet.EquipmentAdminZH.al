@@ -21,5 +21,11 @@ permissionset 50200 EquipmentAdmin_ZH
         table LoanLine_ZH = X,
         page LoanCard_ZH = X,
         page LoanSubforms_ZH = X,
-        page LoanList_ZH = X;
+        page LoanList_ZH = X,
+        tabledata Dimension = R,
+        tabledata "Dimension Value" = R,
+        tabledata "Default Dimension" = R,
+        tabledata "General Ledger Setup" = R,
+        tabledata "Dimension Set Entry" = RIM,
+        tabledata "Dimension Set Tree Node" = RIM;
 }

@@ -15,7 +15,7 @@ codeunit 50200 LoanEventSubscribers_ZH
     [EventSubscriber(ObjectType::Table, Database::LoanHeader_ZH, 'OnBeforeValidateEvent', 'Employee', false, false)]
     local procedure BlockNewLoanForOverdueEmployee(var Rec: Record LoanHeader_ZH; var xRec: Record LoanHeader_ZH; CurrFieldNo:Integer)
     var 
-        OverdueErr: Label 'Employee %! has overdue loans and cannot create a new load. Return overdue equipment first.';
+        OverdueErr: Label 'Employee %1 has overdue loans and cannot create a new loan. Return overdue equipment first.';
     begin   
         if Rec.Employee = '' then
         exit;

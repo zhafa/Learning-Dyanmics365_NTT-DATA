@@ -34,6 +34,12 @@ page 50205 LoanList_ZH
                 {
                     ToolTip = 'Specifies whether the loan is open, released or returned.', Comment = '%';
                 }
+                field("Shortcut Dimension 1 Code";Rec."Shortcut Dimension 1 Code")
+                {
+                    ApplicationArea = Dimensions;
+                    Tooltip = 'Specifies the value of the first global dimension.';
+                    Visible = false;
+                }
             }
         }
     }

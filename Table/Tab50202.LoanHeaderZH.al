@@ -9,10 +9,19 @@ table 50202 LoanHeader_ZH
         {
             Caption = 'No.';
         }
+
+        // Merubah Employee sesuai dengan standar BC
         field(2; Employee; Code[20])
         {
             Caption = 'Employee';
             TableRelation = Employee."No.";
+
+            trigger OnValidate()
+            begin
+                CreateDimFromEmployee();
+            end;
+
+
         }
         field(3; LoanDate; Date)
         {
@@ -48,6 +57,45 @@ table 50202 LoanHeader_ZH
             TableRelation = "No. Series";
             Editable = false;
         }
+        field(29; "Shortcut Dimension 1 Code"; Code[20])
+        {
+            CaptionClass = '1,2,1';
+            Caption = 'Shortcut Dimension 1 Code';
+            TableRelation = "Dimension Value".Code where("Global Dimension No." = const(1), Blocked = const(false));
+
+            trigger OnValidate()
+            begin
+                ValidateShortcutDimCode(1, "Shortcut Dimension 1 Code");
+            end;
+        }
+        field(30; "Shortcut Dimension 2 Code"; Code[20])
+        {
+            CaptionClass = '1,2,2';
+            Caption = 'Shortcut Dimension 2 Code';
+            TableRelation = "Dimension Value".Code where("Global Dimension No." = const(2), Blocked = const(false));
+
+            trigger OnValidate()
+            begin
+                ValidateShortcutDimCode(2, "Shortcut Dimension 2 Code");
+            end;
+        }
+        field(480; "Dimension Set ID"; Integer)
+        {
+            Caption = 'Dimension Set ID';
+            Editable = false;
+            TableRelation = "Dimension Set Entry";
+
+            trigger OnLookup()
+            begin
+                ShowDocDim();
+            end;
+
+            trigger OnValidate()
+            begin
+                DimMgt.UpdateGlobalDimFromDimSetID("Dimension Set ID", "Shortcut Dimension 1 Code", "Shortcut Dimension 2 Code");
+            end;
+        }
+        
     }
 
     keys
@@ -182,5 +230,43 @@ table 50202 LoanHeader_ZH
                     Equipment.Modify(true);
                 end;
             until LoanLine.Next() = 0;
+    end;
+
+    var
+    DimMgt: Codeunit DimensionManagement;
+    local procedure CreateDimFromEmployee()
+    var
+        DefaultDimSource: List of [Dictionary of [Integer, Code[20]]];
+    begin
+        DimMgt.AddDimSource(DefaultDimSource, Database::Employee, Employee);
+        "Shortcut Dimension 1 Code" := '';
+        "Shortcut Dimension 2 Code" := '';
+        "Dimension Set ID" := DimMgt.GetRecDefaultDimID(
+            Rec, CurrFieldNo, DefaultDimSource, '',
+            "Shortcut Dimension 1 Code", "Shortcut Dimension 2 Code", 0, 0);
+    end;
+
+    local procedure ValidateShortcutDimCode(FieldNumber: Integer; var ShortcutDimCode: Code[20])
+    begin
+        DimMgt.ValidateShortcutDimValues(FieldNumber, ShortcutDimCode, "Dimension Set ID");
+    end;
+
+    procedure ShowDocDim()
+    var
+        OldDimSetID: Integer;
+        DimCaptionLbl: Label 'Loan %1';
+    begin
+        if Status <> Status::Open then begin
+            DimMgt.ShowDimensionSet("Dimension Set ID", StrSubstNo(DimCaptionLbl, "No."));
+            exit;
+        end;
+
+        OldDimSetID := "Dimension Set ID";
+        "Dimension Set ID" := DimMgt.EditDimensionSet(
+            Rec, "Dimension Set ID", StrSubstNo(DimCaptionLbl, "No."),
+            "Shortcut Dimension 1 Code", "Shortcut Dimension 2 Code");
+
+        if OldDimSetID <> "Dimension Set ID" then
+            Modify(true);
     end;
 }
