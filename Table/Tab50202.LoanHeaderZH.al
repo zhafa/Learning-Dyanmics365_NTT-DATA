@@ -206,6 +206,8 @@ table 50202 LoanHeader_ZH
         LoanLine: Record LoanLine_ZH;
         Equipment: Record Equipment_ZH;
         OnLoanErr: Label 'Equipment %1 is already on loan and cannot be released in this loan. Remove it from the lines or wait until it is returned.';
+        BlockedErr: Label 'Equipment %1 is blocked and cannot be released. Remove it from the lines.';
+        MaintenanceErr: Label 'Equipment %1 is under maintenance and cannot be release. Remove it from the lines.';
     begin
         LoanLine.SetRange("Document no.", "No.");
         if LoanLine.FindSet() then
@@ -213,6 +215,10 @@ table 50202 LoanHeader_ZH
                 Equipment.Get(LoanLine."EquipmentCode");
                 if Equipment.Status = Equipment.Status::"Loan" then
                     Error(OnLoanErr, Equipment."Code");
+                if Equipment.Blocked = true then 
+                    Error(BlockedErr, Equipment.Code);
+                if Equipment.Status = Equipment.Status::"Under Maintenance" then 
+                    Error(MaintenanceErr, Equipment.Code);
             until LoanLine.Next() = 0;
     end;
 
