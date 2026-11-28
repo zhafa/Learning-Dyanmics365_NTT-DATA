@@ -18,7 +18,7 @@ page 50206 PostedLoanSubform_ZH
                 }
                 field(Description;Rec.Description)
                 {
-                    ToolTip = 'Specifies the dexription pof the equipment. It is filled in automatically.';
+                    ToolTip = 'Specifies the description of the equipment. It is filled in automatically.';
                 }
                 field("Condition on Loan";Rec."Condition on Loan")
                 {

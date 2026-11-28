@@ -1,6 +1,6 @@
 table 50205 PostedLoanLine_ZH
 {
-    Caption = 'Posted LoanLine';
+    Caption = 'Posted Loan Line';
     DataClassification = CustomerContent;
     
     fields

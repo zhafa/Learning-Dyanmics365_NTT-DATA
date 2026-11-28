@@ -32,11 +32,21 @@ page 50207 PostedLoanCard_ZH
                 }
                 field(Status;Rec.Status)
                 {
-                    ToolTip = 'Specifies whether the loan is open, release or return.';
+                    ToolTip = 'Specifies whether the loan is open, released or returned.';
                 }
                 field("Actual Return Date";Rec."Actual Return Date")
                 {
                     ToolTip = 'Specifies the date the equipment was actually returned.';
+                }
+                field("Shortcut Dimension 1 Code"; Rec."Shortcut Dimension 1 code")
+                {
+                    ApplicationArea = Dimensions;
+                    ToolTip = 'Specifies the value of the first global dimension.';
+                }
+                field("Shortcut Dimension 2 Code"; Rec."Shortcut Dimension 2 code")
+                {
+                    ApplicationArea = Dimensions;
+                    ToolTip = 'Specifies the value of the second global dimension.';
                 }
             }
             part(Lines; PostedLoanSubform_ZH)
