@@ -20,7 +20,7 @@ page 50205 LoanList_ZH
                 }
                 field(Employee; Rec.Employee)
                 {
-                    ToolTip = 'Specifies the employee who borrowed te equipment.', Comment = '%';
+                    ToolTip = 'Specifies the employee who borrowed the equipment.', Comment = '%';
                 }
                 field(LoanDate; Rec.LoanDate)
                 {

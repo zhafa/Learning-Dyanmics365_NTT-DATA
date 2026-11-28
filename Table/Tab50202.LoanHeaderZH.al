@@ -189,6 +189,7 @@ table 50202 LoanHeader_ZH
     procedure return()
     var
         NotReleasedErr: Label 'Loan %1 cannot be returned because its status is %2. Only released loans can be returned.';
+        ProcArchive: Codeunit LoanArchive_ZH;
     begin
         if Status <> Status::Released then
             Error(NotReleasedErr, "No.", Status);
@@ -196,7 +197,7 @@ table 50202 LoanHeader_ZH
 
         Status := Status::Returned;
         "Actual Return Date" := WorkDate();
-        Modify(true);
+        ProcArchive.ArchiveLoan(Rec);
     end;
 
     // Seleksi Equipment yang sedang dipinjam

@@ -27,5 +27,14 @@ permissionset 50200 EquipmentAdmin_ZH
         tabledata "Default Dimension" = R,
         tabledata "General Ledger Setup" = R,
         tabledata "Dimension Set Entry" = RIM,
-        tabledata "Dimension Set Tree Node" = RIM;
+        tabledata "Dimension Set Tree Node" = RIM,
+        tabledata PostedLoanHeader_ZH = RI,
+        tabledata PostedLoanLine_ZH = RI,
+        table PostedLoanHeader_ZH = X,
+        table PostedLoanLine_ZH = X,
+        page PostedLoanList_ZH = X,
+        page PostedLoanCard_ZH = X,
+        page PostedLoanSubform_ZH = X,
+        codeunit LoanArchive_ZH = X;
+
 }

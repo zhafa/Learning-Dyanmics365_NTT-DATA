@@ -109,9 +109,12 @@ page 50204 LoanCard_ZH
                 Tooltip = 'Record that the equipment has been returned and make it available again.';
 
                 Trigger OnAction()
+                var
+                    ReturnedMsg: Label 'Loan No. %1 has been returned and archived';
                 begin
                     Rec.return();
-                    CurrPage.Update(false);
+                    Message(ReturnedMsg,Rec."No.");
+                    CurrPage.Close();
                 end;
             }
             
